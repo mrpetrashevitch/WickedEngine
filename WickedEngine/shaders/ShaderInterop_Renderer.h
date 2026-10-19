@@ -114,6 +114,7 @@ enum SHADERTYPE
 	SHADERTYPE_PBR_CLOTH_CLEARCOAT,
 	SHADERTYPE_PBR_TERRAINBLENDED,
 	SHADERTYPE_INTERIORMAPPING,
+	SHADERTYPE_CLASSIC,
 	SHADERTYPE_COUNT
 };
 #endif // __cplusplus
@@ -514,7 +515,7 @@ static_assert(sizeof(ShaderMaterial) == 384);
 inline static const ShaderMaterial shader_material_null = ShaderMaterial::get_null();
 #endif // __cplusplus
 
-static const uint SHADERTYPE_BIN_COUNT = 12;
+static const uint SHADERTYPE_BIN_COUNT = 13;
 
 struct PrimitiveVisibilityTile
 {

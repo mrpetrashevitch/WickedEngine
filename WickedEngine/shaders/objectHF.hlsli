@@ -1093,6 +1093,11 @@ float4 main(PixelInput input, in bool is_frontface : SV_IsFrontFace APPEND_COVER
 	color = surface.baseColor;
 #endif // UNLIT
 
+#ifdef CLASSIC
+	color = surface.baseColor;
+	color.rgb = color.rgb * ClassicLighting(surface.N) + surface.emissiveColor;
+#endif // CLASSIC
+
 #ifdef INTERIORMAPPING
 	surface.baseColor.rgb += surface.emissiveColor;
 	color = surface.baseColor * InteriorMapping(surface.P, surface.N, surface.V, material, meshinstance);

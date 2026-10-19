@@ -124,6 +124,11 @@ void main(uint Gid : SV_GroupID, uint groupIndex : SV_GroupIndex)
 	color = surface.baseColor;
 #endif // UNLIT
 
+#ifdef CLASSIC
+	color = surface.baseColor;
+	color.rgb = color.rgb * ClassicLighting(surface.N) + surface.emissiveColor;
+#endif // CLASSIC
+
 	ApplyFog(surface.hit_depth, surface.V, color);
 
 	color = saturateMediump(color);

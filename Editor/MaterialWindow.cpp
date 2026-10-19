@@ -1230,6 +1230,7 @@ void MaterialWindow::SetEntity(Entity entity)
 		shaderTypeComboBox.AddItem("Cartoon", MaterialComponent::SHADERTYPE_CARTOON);
 		shaderTypeComboBox.AddItem("Unlit", MaterialComponent::SHADERTYPE_UNLIT);
 		shaderTypeComboBox.AddItem("Interior", MaterialComponent::SHADERTYPE_INTERIORMAPPING);
+		shaderTypeComboBox.AddItem("Classic", MaterialComponent::SHADERTYPE_CLASSIC);
 		int customShaderSelection = -1;
 		int customShaderItem = MaterialComponent::SHADERTYPE_COUNT;
 		for (auto& x : wi::renderer::GetCustomShaders())

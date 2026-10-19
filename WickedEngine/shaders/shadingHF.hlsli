@@ -650,4 +650,16 @@ half4 InteriorMapping(in float3 P, in float3 N, in float3 V, in ShaderMaterial m
 	return cubemap.SampleLevel(sampler_linear_clamp, R_parallaxCorrected, 0);
 }
 
+inline half3 ClassicLighting(in half3 N)
+{
+	half3 light_sum = GetAmbientColor();
+	ShaderEntityIterator iterator = directional_lights();
+	for (uint entity_index = iterator.first_item(); entity_index < iterator.end_item(); ++entity_index)
+	{
+		ShaderEntity light = load_entity(entity_index);
+		light_sum += light.GetColor().rgb * saturate(dot(N, light.GetDirection()));
+	}
+	return light_sum;
+}
+
 #endif // WI_SHADING_HF
