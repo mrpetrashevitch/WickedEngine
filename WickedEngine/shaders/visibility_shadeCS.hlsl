@@ -126,7 +126,7 @@ void main(uint Gid : SV_GroupID, uint groupIndex : SV_GroupIndex)
 
 #ifdef CLASSIC
 	color = surface.baseColor;
-	color.rgb = color.rgb * ClassicLighting(surface.N) + surface.emissiveColor;
+	color.rgb = color.rgb * (surface.IsGIApplied() ? surface.gi : ClassicLighting(surface, entity_flat_tile_index, camera)) + surface.emissiveColor;
 #endif // CLASSIC
 
 	ApplyFog(surface.hit_depth, surface.V, color);

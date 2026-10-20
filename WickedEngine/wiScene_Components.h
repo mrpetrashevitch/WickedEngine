@@ -1356,6 +1356,7 @@ namespace wi::scene
 			VISUALIZER = 1 << 2,
 			LIGHTMAPONLY_STATIC = 1 << 3,
 			VOLUMETRICCLOUDS = 1 << 4,
+			CLASSIC_SHADING = 1 << 5,
 		};
 		uint32_t _flags = EMPTY;
 
@@ -1402,12 +1403,14 @@ namespace wi::scene
 		constexpr void SetVisualizerEnabled(bool value) { set_flag(_flags, VISUALIZER, value); }
 		constexpr void SetStatic(bool value) { set_flag(_flags, LIGHTMAPONLY_STATIC, value); }
 		constexpr void SetVolumetricCloudsEnabled(bool value) { set_flag(_flags, VOLUMETRICCLOUDS, value); }
+		constexpr void SetClassicShadingEnabled(bool value) { set_flag(_flags, CLASSIC_SHADING, value); }
 
 		constexpr bool IsCastingShadow() const { return _flags & CAST_SHADOW; }
 		constexpr bool IsVolumetricsEnabled() const { return _flags & VOLUMETRICS; }
 		constexpr bool IsVisualizerEnabled() const { return _flags & VISUALIZER; }
 		constexpr bool IsStatic() const { return _flags & LIGHTMAPONLY_STATIC; }
 		constexpr bool IsVolumetricCloudsEnabled() const { return _flags & VOLUMETRICCLOUDS; }
+		constexpr bool IsClassicShadingEnabled() const { return _flags & CLASSIC_SHADING; }
 		constexpr bool IsInactive() const { return intensity < 0.0001f || range < 0.0001f; }
 
 		constexpr float GetRange() const

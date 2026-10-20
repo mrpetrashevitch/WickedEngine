@@ -870,6 +870,7 @@ enum SHADER_ENTITY_FLAGS
 	ENTITY_FLAG_LIGHT_VOLUMETRICCLOUDS = 1 << 2,
 	ENTITY_FLAG_DECAL_BASECOLOR_ONLY_ALPHA = 1 << 3,
 	ENTITY_FLAG_CAPSULE_SHADOW_COLLIDER = 1 << 4,
+	ENTITY_FLAG_LIGHT_CLASSIC = 1 << 5,
 };
 
 struct alignas(16) ShaderEntity
@@ -986,6 +987,10 @@ struct alignas(16) ShaderEntity
 	inline bool IsStaticLight()
 	{
 		return GetFlags() & ENTITY_FLAG_LIGHT_STATIC;
+	}
+	inline bool IsClassicLight()
+	{
+		return GetFlags() & ENTITY_FLAG_LIGHT_CLASSIC;
 	}
 	inline half GetGravity()
 	{

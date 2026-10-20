@@ -1095,7 +1095,12 @@ float4 main(PixelInput input, in bool is_frontface : SV_IsFrontFace APPEND_COVER
 
 #ifdef CLASSIC
 	color = surface.baseColor;
-	color.rgb = color.rgb * ClassicLighting(surface.N) + surface.emissiveColor;
+#ifdef TILEDFORWARD
+	const half3 classic_lighting = ClassicLighting(surface, flat_tile_index, camera);
+#else
+	const half3 classic_lighting = ClassicLighting(surface);
+#endif // TILEDFORWARD
+	color.rgb = color.rgb * (meshinstance.lightmap >= 0 ? lighting.indirect.diffuse : classic_lighting) + surface.emissiveColor;
 #endif // CLASSIC
 
 #ifdef INTERIORMAPPING

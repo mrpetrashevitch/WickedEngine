@@ -650,14 +650,54 @@ half4 InteriorMapping(in float3 P, in float3 N, in float3 V, in ShaderMaterial m
 	return cubemap.SampleLevel(sampler_linear_clamp, R_parallaxCorrected, 0);
 }
 
-inline half3 ClassicLighting(in half3 N)
+inline half3 ClassicLighting(in Surface surface)
 {
 	half3 light_sum = GetAmbientColor();
 	ShaderEntityIterator iterator = directional_lights();
 	for (uint entity_index = iterator.first_item(); entity_index < iterator.end_item(); ++entity_index)
 	{
 		ShaderEntity light = load_entity(entity_index);
-		light_sum += light.GetColor().rgb * saturate(dot(N, light.GetDirection()));
+		if ((light.layerMask & surface.layerMask) == 0)
+			continue;
+
+		const half3 light_color = light.GetColor().rgb * saturate(dot(surface.N, light.GetDirection()));
+		light_sum += light.IsClassicLight() ? light_color / PI : light_color;
+	}
+	return light_sum;
+}
+
+inline half3 ClassicLighting(in Surface surface, uint flatTileIndex, ShaderCamera camera)
+{
+	half3 light_sum = ClassicLighting(surface);
+	if (camera.buffer_entitytiles_index < 0 || pointlights().empty())
+		return light_sum;
+
+	ShaderEntityIterator iterator = pointlights();
+	for (uint bucket = iterator.first_bucket(); bucket <= iterator.last_bucket(); ++bucket)
+	{
+		uint bucket_bits = load_entitytile(camera, flatTileIndex + bucket);
+		bucket_bits = iterator.mask_entity(bucket, bucket_bits);
+
+		[loop]
+		while (bucket_bits != 0)
+		{
+			const uint bucket_bit_index = firstbitlow(bucket_bits);
+			bucket_bits ^= 1u << bucket_bit_index;
+
+			ShaderEntity light = load_entity(bucket * 32 + bucket_bit_index);
+			if (!light.IsClassicLight() || (light.layerMask & surface.layerMask) == 0)
+				continue;
+
+			const float3 to_light = light.position - surface.P;
+			const half dist2 = dot(to_light, to_light);
+			const half range = light.GetRange();
+			if (dist2 > range * range)
+				continue;
+
+			const half source_radius = light.GetRadius();
+			const half3 L = to_light * rsqrt(dist2);
+			light_sum += light.GetColor().rgb * attenuation_pointlight(max(dist2, source_radius * source_radius), range, light.GetRange2Rcp()) * saturate(dot(surface.N, L)) / PI;
+		}
 	}
 	return light_sum;
 }

@@ -4779,6 +4779,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_VOLUMETRICCLOUDS);
 			}
+			if (light.IsClassicShadingEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
+			}
 
 			ShaderSphere cullsphere = {};
 			if (!light.IsStatic())
@@ -4874,6 +4878,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_VOLUMETRICCLOUDS);
 			}
+			if (light.IsClassicShadingEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
+			}
 
 			// Construct a tight fitting sphere around the spotlight cone:
 			const float radius = light.GetRange() * 0.5f / (outerConeAngleCos * outerConeAngleCos);
@@ -4963,6 +4971,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_VOLUMETRICCLOUDS);
 			}
+			if (light.IsClassicShadingEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
+			}
 
 			ShaderSphere cullsphere = {};
 			if (!light.IsStatic())
@@ -5044,6 +5056,10 @@ void UpdatePerFrameData(
 			if (light.IsVolumetricCloudsEnabled())
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_VOLUMETRICCLOUDS);
+			}
+			if (light.IsClassicShadingEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
 			}
 
 			ShaderSphere cullsphere = {};
