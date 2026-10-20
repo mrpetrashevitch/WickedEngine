@@ -9540,6 +9540,7 @@ namespace wi::scene
 
 		wi::jobsystem::Execute(animation_dependency_scan_workload, [&](wi::jobsystem::JobArgs args) {
 			auto range = wi::profiler::BeginRangeCPU("Animation Dependencies");
+			animation_queue_of_entity.clear();
 			for (size_t i = 0; i < animations.GetCount(); ++i)
 			{
 				AnimationComponent& animationA = animations[i];
@@ -9547,42 +9548,38 @@ namespace wi::scene
 				{
 					continue;
 				}
-				bool dependency = false;
-				for (size_t queue_index = 0; queue_index < animation_queue_count; ++queue_index)
+				// If two animations target the same entity, they have a dependency and need to be executed in order on the first queue that has any of the entities:
+				size_t queue_index = animation_queue_count;
+				for (auto& channelA : animationA.channels)
 				{
-					AnimationQueue& queue = animation_queues[queue_index];
-					for (auto& channelA : animationA.channels)
+					auto it = animation_queue_of_entity.find(channelA.target);
+					if (it != animation_queue_of_entity.end())
 					{
-						if (dependency)
-						{
-							// If dependency has been found, record all other entities in this animation too:
-							queue.entities.insert(channelA.target);
-						}
-						else if (queue.entities.find(channelA.target) != queue.entities.end())
-						{
-							// If two animations target the same entity, they have a dependency and need to be executed in order:
-							dependency = true;
-							queue.animations.push_back(&animationA);
-						}
+						queue_index = std::min(queue_index, it->second);
 					}
-					if (dependency) break;
 				}
-				if (!dependency)
+				if (queue_index == animation_queue_count)
 				{
 					// No dependency, it can be executed on a separate queue (thread)
 					if (animation_queues.size() <= animation_queue_count)
 					{
 						animation_queues.resize(animation_queue_count + 1);
 					}
-					AnimationQueue& queue = animation_queues[animation_queue_count];
-					queue.animations.clear();
-					queue.animations.push_back(&animationA);
-					queue.entities.clear();
-					for (auto& channelA : animationA.channels)
-					{
-						queue.entities.insert(channelA.target);
-					}
+					animation_queues[queue_index].animations.clear();
 					animation_queue_count++;
+				}
+				animation_queues[queue_index].animations.push_back(&animationA);
+				for (auto& channelA : animationA.channels)
+				{
+					auto it = animation_queue_of_entity.find(channelA.target);
+					if (it == animation_queue_of_entity.end())
+					{
+						animation_queue_of_entity[channelA.target] = queue_index;
+					}
+					else
+					{
+						it->second = std::min(it->second, queue_index);
+					}
 				}
 			}
 			wi::profiler::EndRange(range);
