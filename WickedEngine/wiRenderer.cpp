@@ -4783,6 +4783,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
 			}
+			if (light.IsDiffuseOnlyEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_DIFFUSE_ONLY);
+			}
 
 			ShaderSphere cullsphere = {};
 			if (!light.IsStatic())
@@ -4882,6 +4886,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
 			}
+			if (light.IsDiffuseOnlyEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_DIFFUSE_ONLY);
+			}
 
 			// Construct a tight fitting sphere around the spotlight cone:
 			const float radius = light.GetRange() * 0.5f / (outerConeAngleCos * outerConeAngleCos);
@@ -4975,6 +4983,10 @@ void UpdatePerFrameData(
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
 			}
+			if (light.IsDiffuseOnlyEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_DIFFUSE_ONLY);
+			}
 
 			ShaderSphere cullsphere = {};
 			if (!light.IsStatic())
@@ -5060,6 +5072,10 @@ void UpdatePerFrameData(
 			if (light.IsClassicShadingEnabled())
 			{
 				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_CLASSIC);
+			}
+			if (light.IsDiffuseOnlyEnabled())
+			{
+				shaderentity.SetFlags(ENTITY_FLAG_LIGHT_DIFFUSE_ONLY);
 			}
 
 			ShaderSphere cullsphere = {};

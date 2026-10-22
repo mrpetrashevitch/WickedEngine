@@ -138,7 +138,9 @@ inline void light_directional(in ShaderEntity light, in Surface surface, inout L
 	}
 
 	lighting.direct.diffuse = mad(light_color, BRDF_GetDiffuse(surface, surface_to_light), lighting.direct.diffuse);
-	lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
+	[branch]
+	if (!light.IsDiffuseOnlyLight())
+		lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
 
 #ifdef LIGHTING_SCATTER
 	const half scattering = ComputeScattering(saturate(dot(L, -surface.V)));
@@ -259,7 +261,9 @@ inline void light_point(in ShaderEntity light, in Surface surface, inout Lightin
 	}
 #endif // DISABLE_AREA_LIGHTS
 
-	lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
+	[branch]
+	if (!light.IsDiffuseOnlyLight())
+		lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
 				
 #ifdef LIGHTING_SCATTER
 	const half scattering = ComputeScattering(saturate(dot(L, -surface.V)));
@@ -358,7 +362,9 @@ inline void light_spot(in ShaderEntity light, in Surface surface, inout Lighting
 	}
 #endif // DISABLE_AREA_LIGHTS
 
-	lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
+	[branch]
+	if (!light.IsDiffuseOnlyLight())
+		lighting.direct.specular = mad(light_color, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
 					
 #ifdef LIGHTING_SCATTER
 	const half scattering = ComputeScattering(saturate(dot(L, -surface.V)));
@@ -501,7 +507,9 @@ inline void light_rect(in ShaderEntity light, in Surface surface, inout Lighting
 	Lunnormalized = specular_rect - surface.P;
 	L = normalize(Lunnormalized);
 	surface_to_light.create(surface, L); // recompute all surface-light vectors
-	lighting.direct.specular = mad(light_color_specular, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
+	[branch]
+	if (!light.IsDiffuseOnlyLight())
+		lighting.direct.specular = mad(light_color_specular, BRDF_GetSpecular(surface, surface_to_light), lighting.direct.specular);
 				
 #ifdef LIGHTING_SCATTER
 	const half scattering = ComputeScattering(saturate(dot(L, -surface.V)));
